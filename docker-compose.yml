@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  db:
+    container_name: 'art_db_postgres'
+    image: postgres
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
