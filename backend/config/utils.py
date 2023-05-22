@@ -1,5 +1,6 @@
 from os import environ
-from dotenv import load_dotenv
+
+from dotenv.main import load_dotenv
 
 from backend.config.default import DefaultSettings
 

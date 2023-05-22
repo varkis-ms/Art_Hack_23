@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "hack-mobile-backend"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["varkis <markin-2002@yandex.ru>"]
 readme = "README.md"
-packages = [{include = "hack_mobile_backend"}]
+packages = [{include = "backend"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -21,6 +21,7 @@ asyncpg = "^0.27.0"
 uvicorn = "^0.21.1"
 bcrypt = "^4.0.1"
 python-multipart = "^0.0.6"
+dotenv = "^0.0.5"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -29,6 +30,7 @@ black = "^23.3.0"
 pytest = "^7.3.0"
 dotenv = "^0.0.5"
 pylint = "^2.17.2"
+requests = "^2.30.0"
 
 [build-system]
 requires = ["poetry-core"]

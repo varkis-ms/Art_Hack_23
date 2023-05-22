@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import get_settings
 from backend.database.connection import get_session
-from backend.database.models import User
+from backend.database.models import AuthTablePassword, User
 from backend.schemas import RegistrationForm, TokenData
 from backend.utils.user.auth_db import *
 
@@ -17,13 +17,13 @@ def verify_password(plain_password: str, hash_password: str) -> bool:
 
 async def authenticate_user(
     session: AsyncSession,
-    username: str,
+    email: str,
     password: str,
 ) -> User | bool:
-    user = await get_user(session, username)
+    user = await get_user_by_email(session, email)
     if not user:
         return False
-    if not verify_password(password, user.password):
+    if not verify_password(password, user.password.password):
         return False
     return user
 
@@ -60,13 +60,13 @@ async def get_current_user(
         payload = jwt.decode(
             token, get_settings().SECRET_KEY, algorithms=[get_settings().ALGORITHM]
         )
-        email: str = payload.get("sub")
-        if email is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(user_id=user_id)
     except JWTError:
         raise credentials_exception
-    user = await get_user(session, email=token_data.email)
+    user = await get_user_by_id(session, user_id=token_data.user_id)
     if user is None:
         raise credentials_exception
     return user

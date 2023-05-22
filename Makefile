@@ -43,30 +43,11 @@ help: ##@Help Show this help
 db:  ##@Database Create database with docker-compose
 	docker-compose -f docker-compose.yml up -d --remove-orphans
 
-lint:  ##@Code Check code with pylint
-	poetry run python3 -m pylint $(CODE)
-
-format:  ##@Code Reformat code with isort and black
-	poetry run python3 -m isort $(CODE)
-	poetry run python3 -m black $(CODE)
-
 migrate:  ##@Database Do all migrations in database
 	cd $(APPLICATION_NAME)/database && alembic upgrade $(args)
 
-run:  ##@Application Run application server
-	poetry run python3 -m $(APPLICATION_NAME)
-
 revision:  ##@Database Create new revision file automatically with prefix (ex. 2022_01_01_14cs34f_message.py)
 	cd $(APPLICATION_NAME)/database && alembic revision --autogenerate
-
-open_db:  ##@Database Open database inside docker-image
-	docker exec -it cloud_storage_postgres psql -d $(POSTGRES_DB) -U $(POSTGRES_USER)
-
-test:  ##@Testing Test application with pytest
-	make db && $(TEST)
-
-test-cov:  ##@Testing Test application with pytest and create coverage report
-	make db && $(TEST) --cov=$(APPLICATION_NAME) --cov-report html --cov-fail-under=70
 
 clean:  ##@Code Clean directory from garbage files
 	rm -fr *.egg-info dist
