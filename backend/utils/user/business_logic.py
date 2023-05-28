@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import get_settings
 from backend.database.connection import get_session
-from backend.database.models import AuthTablePassword, User
+from backend.database.models_postgres import AuthTablePassword, User
 from backend.schemas import RegistrationForm, TokenData
 from backend.utils.user.auth_db import *
 
@@ -24,6 +24,16 @@ async def authenticate_user(
     if not user:
         return False
     if not verify_password(password, user.password.password):
+        return False
+    return user
+
+
+async def authenticate_user_vk(
+    session: AsyncSession,
+    vk_id: int,
+) -> User | bool:
+    user = await get_user_by_vk_id(session, vk_id)
+    if not user:
         return False
     return user
 

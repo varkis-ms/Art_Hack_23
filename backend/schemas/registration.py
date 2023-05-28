@@ -16,6 +16,10 @@ class RegistrationForm(BaseModel):
         return values
 
 
+class VkTokenAuth(BaseModel):
+    vk_id: int
+
+
 class RegistrationFormInDb(BaseModel):
     email: EmailStr
     password: str = Field(alias="password1")

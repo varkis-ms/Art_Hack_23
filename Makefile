@@ -40,7 +40,7 @@ help: ##@Help Show this help
 	@echo -e "Usage: make [target] ...\n"
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
-db:  ##@Database Create database with docker-compose
+service_up:  ##@Database Create database with docker-compose
 	docker-compose -f docker-compose.yml up -d --remove-orphans
 
 migrate:  ##@Database Do all migrations in database

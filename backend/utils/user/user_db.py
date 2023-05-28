@@ -1,15 +1,16 @@
-from sqlalchemy import delete, exc, insert, select
+from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.database.models import User
-from backend.schemas import UserRequest
+from backend.database.models_postgres import User
+from backend.schemas import UserInfo
 
 
 async def update_user_info(
-    session: AsyncSession, user: User, user_info: UserRequest
+        session: AsyncSession, user: User, user_info: UserInfo
 ) -> User | bool:
     for key, value in user_info.dict().items():
-        setattr(user, key, value)
+        if value:
+            setattr(user, key, value)
     session.add(user)
     try:
         await session.commit()

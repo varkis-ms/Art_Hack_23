@@ -1,14 +1,15 @@
-from fastapi import APIRouter, Body, Depends, Form, status
+from fastapi import APIRouter, Body, Depends, Form, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from backend.config import get_settings
-from backend.database.models import User
+from backend.database.models_postgres import User
 from backend.schemas import (
     RegistrationForm,
     RegistrationFormInDb,
     RegistrationResponse,
     Token,
     UserSchema,
+    VkTokenAuth,
 )
 from backend.utils.user.auth_db import *
 from backend.utils.user.business_logic import *
@@ -31,6 +32,29 @@ async def auth(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    access_token_expires = timedelta(minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(user.id)}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@auth_router.post(
+    "/auth_vk",
+    response_model=Token,
+)
+async def auth_vk(
+    form_data: VkTokenAuth = Body(),
+    session: AsyncSession = Depends(get_session),
+):
+    user = await authenticate_user_vk(session, form_data.vk_id)
+    if not user:
+        check_user = await register_user_vk(session, form_data.vk_id)
+        if not check_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User already exists.",
+            )
     access_token_expires = timedelta(minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": str(user.id)}, expires_delta=access_token_expires

@@ -1,6 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
+import redis.asyncio as redis
+from redis.asyncio.client import Redis
+from motor.motor_asyncio import AsyncIOMotorClient
+
 from backend.config import get_settings
 
 
@@ -28,6 +32,16 @@ async def get_session() -> AsyncSession:
         yield session
 
 
+async def get_redis() -> Redis:
+    return redis.from_url(get_settings().redis_uri, decode_responses=True)
+
+
+async def get_mongo() -> AsyncIOMotorClient:
+    return AsyncIOMotorClient(get_settings().mongo_uri)
+
+
 __all__ = [
     "get_session",
+    "get_redis",
+    "get_mongo",
 ]

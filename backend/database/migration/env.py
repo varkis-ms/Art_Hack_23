@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from backend.config import get_settings
 from backend.database import DeclarativeBase
-from backend.database.models import *  # noqa
+from backend.database.models_postgres import *  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

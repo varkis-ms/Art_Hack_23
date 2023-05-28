@@ -1,6 +1,8 @@
+import datetime
 from logging import getLogger
 
 from fastapi import FastAPI
+
 from uvicorn import run
 
 from backend.config import DefaultSettings
@@ -45,7 +47,6 @@ def get_app() -> FastAPI:
 
 
 app = get_app()
-
 
 if __name__ == "__main__":
     settings_for_application = get_settings()
